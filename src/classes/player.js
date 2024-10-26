@@ -26,7 +26,6 @@ class Player{
      position.forEach(coord => {
       this.board[coord[0]][coord[1]] = 1
     });
-    console.log(this.board)
    });
   }
 }
