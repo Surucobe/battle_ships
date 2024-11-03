@@ -9,11 +9,11 @@ class Gameboard{
       this.board[i] = new Array(9).fill(0);
     }
 
-    const player1 = new Player(this.board);
-    const computer = new Player(this.board);
+    this.player1 = new Player(this.board);
+    this.player2 = new Player(this.board);
   }
 
-  endPlayerTurn(){
+  changeTurnPlayer(){
    if(this.turnPlayer === 'player1'){
     this.turnPlayer = 'player2';
    }else{
@@ -21,12 +21,32 @@ class Gameboard{
    }
   }
 
+  turnPlayer(){}
+
   reaceiveAttack(coordinates){
+    debugger
+    //input coordinates
     // needs to check the board to see if there was a hit
+    if(this.turnPlayer === 'player1'){
+      let result = this.player1.receiveAttack(coordinates);
+      while(result){
+        receiveAttack(coordinates)
+      }
+    }else{
+      this.player2
+    }
   }
 
   getGameBoard(){
     return this.board;
+  }
+
+  currentGameState(){
+    debugger
+
+    return {
+     player1_board: this.player1.getCurrentState()
+    }
   }
 }
 

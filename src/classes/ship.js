@@ -9,16 +9,16 @@ class Ship{
 
   hit(){
     this.hp--;
-
+    this.isSunk();
     return this.hp;
   }
 
   isSunk(){
-    if(this.hp == 0){
+    if(this.hp === 0){
       this.sunk = true
     }
     return this.sunk;
   }
 }
 
-export default Ship
+export default Ship;

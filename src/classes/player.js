@@ -4,6 +4,7 @@ class Player{
   constructor(board){
     this.board = board;
 
+    // implementation of this using the DOM will be done in the future
     this.ships = [
       new Ship(5, 'Vengeful Spirit', [[5,1], [5,2], [5,3], [5,4], [5,5]]),
       new Ship(4, '', [[4,1], [4,2], [4,3], [4,4]]),
@@ -12,7 +13,7 @@ class Player{
       new Ship(2, '', [[1,1], [1,2]])
     ];
 
-    this.placeShips()
+    this.placeShips();
   }
 
   getShips(){
@@ -21,12 +22,34 @@ class Player{
 
   placeShips(){
    this.ships.forEach(ship => {
-     let position = ship.position
+     let position = ship.position;
      
      position.forEach(coord => {
-      this.board[coord[0]][coord[1]] = 1
+      this.board[coord[0]][coord[1]] = 1;
     });
    });
+  }
+
+  getCurrentState(){
+    return {
+      board: this.board,
+      ships: this.ships
+    }
+  }
+
+  receiveAttack(coord){
+    let hitResult = false;
+    this.ships.forEach(ship => {
+      for(let i = 0; i < ship.length ; i++){
+        if(ship.position[i].toString() === coord.toString()){
+          ship.position.splice(i, 1, null);
+          ship.hit();
+          hitResult = true;
+        }
+      }
+    })
+
+    return hitResult;
   }
 }
 
