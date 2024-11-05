@@ -1,8 +1,9 @@
 import Ship from "./ship";
 
 class Player{
-  constructor(board){
+  constructor(board, playerName){
     this.board = board;
+    this.name = playerName;
 
     // implementation of this using the DOM will be done in the future
     this.ships = [
@@ -14,11 +15,11 @@ class Player{
     ];
 
     this.placeShips();
-  }
+  };
 
   getShips(){
     return this.ships;
-  }
+  };
 
   placeShips(){
    this.ships.forEach(ship => {
@@ -26,35 +27,30 @@ class Player{
      
     for(let i = 0; i < position.length ; i++){
       this.board[position[i][0]][position[i][1]] = ship;
-    }
-    debugger
+    };
    });
-  }
+  };
 
   getCurrentState(){
     return {
       board: this.board,
       ships: this.ships
     }
-  }
+  };
 
   receiveAttack(coord){
-    let hitResult = false;
+    if(this.board[coord[0]][coord[1]] == null) return false;
 
-    if(!this.board[coord[0]][coord[1]]) return hitResult
+    if(this.board[coord[0]][coord[1]] !== 0){
+      this.board[coord[0]][coord[1]].hit();
+      this.board[coord[0]][coord[1]] = null;
+      return true;
+    };
 
-    this.ships.forEach(ship => {
-      for(let i = 0; i < ship.length ; i++){
-        if(ship.position[i].toString() === coord.toString()){
-          ship.position.splice(i, 1, null);
-          ship.hit();
-          hitResult = true;
-        }
-      }
-    })
+    this.board[coord[0]][coord[1]] = null;
 
-    return hitResult;
-  }
+    return false;
+  };
 }
 
 export default Player;

@@ -9,8 +9,8 @@ class Gameboard{
       this.board[i] = new Array(9).fill(0);
     }
 
-    this.player1 = new Player(this.board);
-    this.player2 = new Player(this.board);
+    this.player1 = new Player(this.board, 'player 1');
+    this.player2 = new Player(this.board, 'player 2');
   }
 
   changeTurnPlayer(){
@@ -21,32 +21,19 @@ class Gameboard{
    }
   }
 
-  turnPlayer(){}
+  identifyPlayer = () => {
+    return this.turnPlayer == 'player1'?
+    this.player1 : this.player2
+  }
 
   reaceiveAttack(coordinates){
-    debugger
     //input coordinates
-    // needs to check the board to see if there was a hit
-    if(this.turnPlayer === 'player1'){
-      let result = this.player1.receiveAttack(coordinates);
-      while(result){
-        this.reaceiveAttack(coordinates)
-      }
-    }else{
-      this.player2
-    }
+    let result = this.identifyPlayer().receiveAttack(coordinates);
+    result? this.reaceiveAttack(coordinates) : this.changeTurnPlayer();
   }
 
   getGameBoard(){
     return this.board;
-  }
-
-  currentGameState(){
-    debugger
-
-    return {
-     player1_board: this.player1.getCurrentState()
-    }
   }
 }
 
