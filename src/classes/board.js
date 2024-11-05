@@ -30,7 +30,7 @@ class Gameboard{
     if(this.turnPlayer === 'player1'){
       let result = this.player1.receiveAttack(coordinates);
       while(result){
-        receiveAttack(coordinates)
+        this.reaceiveAttack(coordinates)
       }
     }else{
       this.player2

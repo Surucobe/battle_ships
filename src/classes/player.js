@@ -24,9 +24,10 @@ class Player{
    this.ships.forEach(ship => {
      let position = ship.position;
      
-     position.forEach(coord => {
-      this.board[coord[0]][coord[1]] = 1;
-    });
+    for(let i = 0; i < position.length ; i++){
+      this.board[position[i][0]][position[i][1]] = ship;
+    }
+    debugger
    });
   }
 
@@ -39,6 +40,9 @@ class Player{
 
   receiveAttack(coord){
     let hitResult = false;
+
+    if(!this.board[coord[0]][coord[1]]) return hitResult
+
     this.ships.forEach(ship => {
       for(let i = 0; i < ship.length ; i++){
         if(ship.position[i].toString() === coord.toString()){
