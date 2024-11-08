@@ -27,9 +27,13 @@ class Gameboard{
   }
 
   reaceiveAttack(coordinates){
-    //input coordinates
     let result = this.identifyPlayer().receiveAttack(coordinates);
-    result? this.reaceiveAttack(coordinates) : this.changeTurnPlayer();
+    if(result){
+      return true
+    }else{
+      this.changeTurnPlayer();
+      return false
+    }
   }
 
   getGameBoard(){
