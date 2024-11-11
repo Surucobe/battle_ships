@@ -2,8 +2,9 @@ import Ship from "./ship";
 
 class Player{
   constructor(board, playerName){
-    this.board = board;
+    this.board = [...board];
     this.name = playerName;
+    this.score = 0;
 
     // implementation of this using the DOM will be done in the future
     this.ships = [
@@ -31,18 +32,18 @@ class Player{
    });
   };
 
-  getCurrentState(){
-    return {
-      board: this.board,
-      ships: this.ships
-    }
-  };
-
   receiveAttack(coord){
     if(this.board[coord[0]][coord[1]] == null) return false;
 
     if(this.board[coord[0]][coord[1]] !== 0){
       this.board[coord[0]][coord[1]].hit();
+      this.score = this.score + 10;
+      
+      if(this.board[coord[0]][coord[1]].isSunk()){
+        //if ship has no more hp it must be remove from array
+        console.log(`The ${this.board[coord[0]][coord[1]].name} has been sunked!`);
+      }
+
       this.board[coord[0]][coord[1]] = null;
       return true;
     };

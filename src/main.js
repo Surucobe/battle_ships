@@ -8,7 +8,14 @@ const app = document.getElementById('app');
 
 const message = document.createElement('div');
 message.classList.add('message');
-message.innerHTML = 'attack result goes here';
+
+const score1 = document.createElement('div');
+score1.classList.add('score1');
+score1.innerHTML = '0';
+
+const score2 = document.createElement('div');
+score2.classList.add('score2');
+score2.innerHTML = '0';
 
 const boardGame = document.createElement('div');
 boardGame.classList.add('gameboard');
@@ -17,22 +24,42 @@ const playerTwoBoard = document.createElement('div');
 playerTwoBoard.classList.add('gameboard');
 playerTwoBoard.classList.add('hidden');
 
+function messageVisibility(msg){
+  message.innerHTML = msg;
+  message.classList.toggle('fade-out');
+  message.classList.toggle('fade-in');
+
+  setTimeout(() => {
+    message.classList.remove('fade-in');
+    message.classList.add('fade-out');
+  }, 3000)
+}
+
+function updateScore(){
+  Game.turnPlayer == 'player1'?
+  document.querySelector('.score1').innerHTML = Game.identifyPlayer().score:
+  document.querySelector('.score2').innerHTML = Game.identifyPlayer().score
+}
+
 function attackResults(result, elm) {
   if(result){
     elm.target.style.backgroundColor = 'lightgreen';
     elm.target.style.cursor = 'initial';
     elm.target.removeEventListener('click', getCoordinates);
     elm.target.classList.remove('hover');
+    updateScore()
+    messageVisibility('Hit!');
   }else{
     elm.target.style.backgroundColor = 'lightcoral';
     elm.target.style.cursor = 'initial';
     elm.target.removeEventListener('click', getCoordinates);
     elm.target.classList.remove('hover');
-    setTimeout(changeVisibility, 3000)
+    setTimeout(changeBoardVisibility, 3000)
+    messageVisibility('Miss!')
   }
 };
 
-function changeVisibility(){
+function changeBoardVisibility(){
   document.querySelectorAll('.gameboard').forEach(board => board.classList.toggle('hidden'));
 }
 
@@ -63,5 +90,7 @@ createPlayerBoard(Game.player1.board, boardGame);
 createPlayerBoard(Game.player2.board, playerTwoBoard);
 
 app.appendChild(message);
+app.appendChild(score1)
+app.appendChild(score2)
 app.appendChild(boardGame);
 app.appendChild(playerTwoBoard);

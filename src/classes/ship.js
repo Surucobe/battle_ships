@@ -9,8 +9,6 @@ class Ship{
 
   hit(){
     this.hp--;
-    this.isSunk();
-    return this.hp;
   }
 
   isSunk(){
