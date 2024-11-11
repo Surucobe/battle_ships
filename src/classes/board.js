@@ -27,6 +27,7 @@ class Gameboard{
   }
 
   reaceiveAttack(coordinates){
+    debugger
     let result = this.identifyPlayer().receiveAttack(coordinates);
     if(result){
       return true

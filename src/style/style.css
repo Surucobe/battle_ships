@@ -11,6 +11,12 @@
   align-items: center;
 }
 
+.message {
+  position: absolute;
+  top: 0;
+  border: 1px solid #000;
+}
+
 .gameboard {
   border: 1px solid #000;
   display: grid;
@@ -29,4 +35,8 @@
 .hover:hover{
   border: 1px solid lightblue;
   transform: scale(1.1);
+}
+
+.hidden {
+  display: none;
 }
