@@ -1,10 +1,14 @@
 import Ship from "./ship";
 
 class Player{
-  constructor(board, playerName){
-    this.board = [...board];
+  constructor(playerName){
+    this.board = [];
     this.name = playerName;
     this.score = 0;
+
+    for(let i = 0; i < 10 ;i++){
+      this.board[i] = new Array(9).fill(0);
+    }
 
     // implementation of this using the DOM will be done in the future
     this.ships = [

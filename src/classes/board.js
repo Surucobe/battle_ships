@@ -9,8 +9,8 @@ class Gameboard{
       this.board[i] = new Array(9).fill(0);
     }
 
-    this.player1 = new Player(this.board, 'player 1');
-    this.player2 = new Player(this.board, 'player 2');
+    this.player1 = new Player('player 1');
+    this.player2 = new Player('player 2');
   }
 
   changeTurnPlayer(){
