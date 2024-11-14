@@ -36,7 +36,20 @@ class Player{
    });
   };
 
+  remainingShips(){
+    return this.ships.length
+  }
+
+  removeSunkenShip(coord){
+    this.ships.forEach(ship => {
+      if(JSON.stringify(ship) == JSON.stringify(this.board[coord[0]][coord[1]])){
+        this.ships.splice(this.ships.indexOf(ship), 1);
+      }
+    })
+  }
+
   receiveAttack(coord){
+    debugger
     if(this.board[coord[0]][coord[1]] == null) return false;
 
     if(this.board[coord[0]][coord[1]] !== 0){
@@ -44,8 +57,8 @@ class Player{
       this.score = this.score + 10;
       
       if(this.board[coord[0]][coord[1]].isSunk()){
-        //if ship has no more hp it must be remove from array
         console.log(`The ${this.board[coord[0]][coord[1]].name} has been sunked!`);
+        this.removeSunkenShip(coord);
       }
 
       this.board[coord[0]][coord[1]] = null;

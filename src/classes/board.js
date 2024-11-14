@@ -13,6 +13,13 @@ class Gameboard{
     this.player2 = new Player('player 2');
   }
 
+  checkGameState(){
+    return {
+      p1: this.player1.remainingShips(),
+      p2: this.player2.remainingShips()
+    }
+  }
+
   changeTurnPlayer(){
    if(this.turnPlayer === 'player1'){
     this.turnPlayer = 'player2';

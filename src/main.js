@@ -41,19 +41,32 @@ function updateScore(){
   document.querySelector('.score2').innerHTML = Game.identifyPlayer().score
 }
 
+function removeListener(elm){
+  elm.target.removeEventListener('click', getCoordinates);
+  elm.target.dataset.coord = '';
+}
+
+function succesAtkStyle(elm){
+  elm.target.style.backgroundColor = 'lightgreen';
+  elm.target.style.cursor = 'initial';
+  elm.target.classList.remove('hover');
+}
+
+function failedAtkStyle(elm){
+  elm.target.style.backgroundColor = 'lightcoral';
+  elm.target.style.cursor = 'initial';
+  elm.target.classList.remove('hover');
+}
+
 function attackResults(result, elm) {
   if(result){
-    elm.target.style.backgroundColor = 'lightgreen';
-    elm.target.style.cursor = 'initial';
-    elm.target.removeEventListener('click', getCoordinates);
-    elm.target.classList.remove('hover');
-    updateScore()
+    succesAtkStyle(elm);
+    removeListener(elm);
+    updateScore();
     messageVisibility('Hit!');
   }else{
-    elm.target.style.backgroundColor = 'lightcoral';
-    elm.target.style.cursor = 'initial';
-    elm.target.removeEventListener('click', getCoordinates);
-    elm.target.classList.remove('hover');
+    failedAtkStyle(elm);
+    removeListener(elm);
     setTimeout(changeBoardVisibility, 3000)
     messageVisibility('Miss!')
   }
@@ -65,8 +78,18 @@ function changeBoardVisibility(){
 
 function getCoordinates(elm){
   let coord = elm.target.dataset.coord.split('-');
+
+  if(coord == '') return
+
   let result = Game.reaceiveAttack(coord);
   attackResults(result, elm);
+  if(result){
+    let gameState = Game.checkGameState();
+
+    if(gameState.p1 == 0 || gameState.p2 == 0){
+      alert(`${Game.identifyPlayer().name} Won!`);
+    }
+  }
 };
 
 function createPlayerBoard(array, board){
