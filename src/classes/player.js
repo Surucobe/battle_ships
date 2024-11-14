@@ -49,7 +49,6 @@ class Player{
   }
 
   receiveAttack(coord){
-    debugger
     if(this.board[coord[0]][coord[1]] == null) return false;
 
     if(this.board[coord[0]][coord[1]] !== 0){

@@ -3,6 +3,11 @@ import Gameboard from "./classes/board";
 import './style/style.css';
 
 const Game = new Gameboard();
+let diasblePlay = false;
+
+window.addEventListener('animationend', (e) => {
+  diasblePlay = !diasblePlay;
+})
 
 const app = document.getElementById('app');
 
@@ -32,7 +37,7 @@ function messageVisibility(msg){
   setTimeout(() => {
     message.classList.remove('fade-in');
     message.classList.add('fade-out');
-  }, 3000)
+  }, 1500)
 }
 
 function updateScore(){
@@ -42,8 +47,8 @@ function updateScore(){
 }
 
 function removeListener(elm){
-  elm.target.removeEventListener('click', getCoordinates);
-  elm.target.dataset.coord = '';
+  elm.removeEventListener('click', getCoordinates);
+  elm.dataset.coord = '';
 }
 
 function succesAtkStyle(elm){
@@ -58,16 +63,24 @@ function failedAtkStyle(elm){
   elm.target.classList.remove('hover');
 }
 
+function endGameStyles(elm){
+  if(elm.style.backgroundColor == ''){
+    elm.style.backgroundColor = 'lightblue';
+    elm.style.cursor = 'initial';
+    elm.classList.remove('hover');
+  }
+}
+
 function attackResults(result, elm) {
   if(result){
     succesAtkStyle(elm);
-    removeListener(elm);
+    removeListener(elm.target);
     updateScore();
     messageVisibility('Hit!');
   }else{
     failedAtkStyle(elm);
-    removeListener(elm);
-    setTimeout(changeBoardVisibility, 3000)
+    removeListener(elm.target);
+    setTimeout(changeBoardVisibility, 1500)
     messageVisibility('Miss!')
   }
 };
@@ -77,20 +90,32 @@ function changeBoardVisibility(){
 }
 
 function getCoordinates(elm){
+  if(diasblePlay) return;
+
   let coord = elm.target.dataset.coord.split('-');
 
-  if(coord == '') return
+  if(coord == '') return;
 
+  diasblePlay = !diasblePlay;
   let result = Game.reaceiveAttack(coord);
   attackResults(result, elm);
-  if(result){
-    let gameState = Game.checkGameState();
-
-    if(gameState.p1 == 0 || gameState.p2 == 0){
-      alert(`${Game.identifyPlayer().name} Won!`);
-    }
-  }
+  if(result) gameOver()
 };
+
+function gameOver() {
+  let gameState = Game.checkGameState();
+
+  if(gameState.p1 == 0 || gameState.p2 == 0){
+  let playBoard = [...document.querySelectorAll('[data-coord]')];
+
+  playBoard.forEach(elm => {
+    removeListener(elm);
+    endGameStyles(elm);
+  })
+
+    alert(`${Game.identifyPlayer().name} Won!`);
+  }
+}
 
 function createPlayerBoard(array, board){
   for(let i = 0; i < array.length ; i++){
