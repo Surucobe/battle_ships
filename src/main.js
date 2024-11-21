@@ -2,12 +2,10 @@ import Gameboard from "./classes/board";
 
 import './style/style.css';
 
-const Game = new Gameboard();
+let Game;
 let diasblePlay = false;
 
-window.addEventListener('animationend', (e) => {
-  diasblePlay = !diasblePlay;
-})
+window.addEventListener('animationend', (e) => diasblePlay = !diasblePlay);
 
 const app = document.getElementById('app');
 
@@ -28,6 +26,48 @@ boardGame.classList.add('gameboard');
 const playerTwoBoard = document.createElement('div');
 playerTwoBoard.classList.add('gameboard');
 playerTwoBoard.classList.add('hidden');
+
+// Modal to start the game with either one or two players
+const startGame = document.createElement('div');
+startGame.classList.add('game-starting-screen');
+
+const startGameModal = document.createElement('div');
+startGameModal.classList.add('game-modal');
+startGame.appendChild(startGameModal);
+
+const dismissScreen = () => startGame.style.display = 'none';
+
+const onePlayerBtn = document.createElement('button');
+onePlayerBtn.innerText = 'One Player'
+onePlayerBtn.addEventListener('click', () => {
+  dismissScreen()
+  alert('only one player');
+  debugger
+  Game = gameStart()
+  createPlayerBoard(Game.player1.board, boardGame);
+  createComputerBoard(Game.cp.board, playerTwoBoard);
+});
+
+startGameModal.appendChild(onePlayerBtn);
+
+const twoPlayersBtn = document.createElement('button');
+twoPlayersBtn.innerText = 'Two Players';
+twoPlayersBtn.addEventListener('click', () => {
+  dismissScreen();
+  alert('Two players');
+  debugger
+  Game = gameStart(true);
+  createPlayerBoard(Game.player1.board, boardGame);
+  createPlayerBoard(Game.player2.board, playerTwoBoard);
+
+  return Game;
+});
+startGameModal.appendChild(twoPlayersBtn);
+
+
+function gameStart(players = false) {
+  return new Gameboard(players);
+}
 
 function messageVisibility(msg){
   message.innerHTML = msg;
@@ -126,19 +166,34 @@ function createPlayerBoard(array, board){
       square.classList.add('hover');
   
       square.dataset.coord = `${i}-${k}`;
+      square.innerText = `${i}-${k}`;
   
       square.addEventListener('click', (e) => getCoordinates(e))
   
       board.appendChild(square);
     }
-  }  
+  }
 };
 
-createPlayerBoard(Game.player1.board, boardGame);
-createPlayerBoard(Game.player2.board, playerTwoBoard);
+function createComputerBoard(array, board){
+  for(let i = 0; i < array.length ; i++){
+    for(let k = 0; k <= array[i].length ; k++){
+      let square = document.createElement('div');
+  
+      square.classList.add('gameboard-square');
+      square.classList.add('hover');
+  
+      square.dataset.coord = `${i}-${k}`;
+      square.innerText = `${i}-${k}`;
+  
+      board.appendChild(square);
+    }
+  }
+}
 
 app.appendChild(message);
-app.appendChild(score1)
-app.appendChild(score2)
+app.appendChild(score1);
+app.appendChild(score2);
 app.appendChild(boardGame);
 app.appendChild(playerTwoBoard);
+app.appendChild(startGame);

@@ -1,7 +1,8 @@
 import Player from './player';
+import Computer from './computer';
 
 class Gameboard{
-  constructor(){
+  constructor(playerTwo = false){
     this.board = [];
     this.turnPlayer = 'player1';
 
@@ -10,7 +11,11 @@ class Gameboard{
     }
 
     this.player1 = new Player('player 1');
-    this.player2 = new Player('player 2');
+    if(playerTwo){
+      this.player2 = new Player('player 2');
+    }else{
+      this.player2 = this.cp = new Computer();
+    }
   }
 
   checkGameState(){
