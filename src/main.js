@@ -5,6 +5,7 @@ import './style/style.css';
 let Game;
 let disablePlay = false;
 let computerPlayer = false;
+let computerAttackMiss = true;
 
 window.addEventListener('animationend', (e) => disablePlay = !disablePlay);
 
@@ -49,6 +50,8 @@ onePlayerBtn.addEventListener('click', () => {
   createBoardForPlayer(Game.player1.board, boardGame);
   createComputerBoard(Game.player2.board, playerTwoBoard);
 
+  computerPlayer = !computerPlayer;
+
   score1.innerHTML = 'P1: 0';
   score2.innerHTML = 'CP: 0';
 });
@@ -88,7 +91,6 @@ function messageVisibility(msg){
 }
 
 function updateScore(){
-  debugger
   computerPlayer?
   Game.turnPlayer == 'player1'?
   score1.innerText = `P1: ${Game.identifyPlayer().score}`:
@@ -130,11 +132,13 @@ function attackResults(result, elm) {
     removeListener(elm.target);
     updateScore();
     messageVisibility('Hit!');
+    if(computerPlayer & !computerAttackMiss) setTimeout(Game.player2.reaceiveAttack());
   }else{
     failedAtkStyle(elm);
     removeListener(elm.target);
-    setTimeout(changeBoardVisibility, 1500)
-    messageVisibility('Miss!')
+    setTimeout(changeBoardVisibility, 1500);
+    messageVisibility('Miss!');
+    if(computerPlayer) setTimeout(Game.player2.reaceiveAttack(), 2000);
   }
 };
 
