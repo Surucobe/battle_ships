@@ -1,8 +1,8 @@
 import Player from "./player";
 
 class Computer extends Player {
-  constructor(props) {
-    super(props);
+  constructor(props, ships) {
+    super(props, ships);
   }
 
   generateCoordinates() {

@@ -3,9 +3,10 @@ import Gameboard from "./classes/board";
 import './style/style.css';
 
 let Game;
-let diasblePlay = false;
+let disablePlay = false;
+let computerPlayer = false;
 
-window.addEventListener('animationend', (e) => diasblePlay = !diasblePlay);
+window.addEventListener('animationend', (e) => disablePlay = !disablePlay);
 
 const app = document.getElementById('app');
 
@@ -13,12 +14,12 @@ const message = document.createElement('div');
 message.classList.add('message');
 
 const score1 = document.createElement('div');
-score1.classList.add('score1');
-score1.innerHTML = '0';
+score1.classList.add('score');
+score1.classList.add('score-one');
 
 const score2 = document.createElement('div');
-score2.classList.add('score2');
-score2.innerHTML = '0';
+score2.classList.add('score');
+score2.classList.add('score-two');
 
 const boardGame = document.createElement('div');
 boardGame.classList.add('gameboard');
@@ -40,12 +41,16 @@ const dismissScreen = () => startGame.style.display = 'none';
 const onePlayerBtn = document.createElement('button');
 onePlayerBtn.innerText = 'One Player'
 onePlayerBtn.addEventListener('click', () => {
-  dismissScreen()
-  alert('only one player');
-  debugger
-  Game = gameStart()
-  createPlayerBoard(Game.player1.board, boardGame);
-  createComputerBoard(Game.cp.board, playerTwoBoard);
+
+  dismissScreen();
+
+  Game = gameStart();
+
+  createBoardForPlayer(Game.player1.board, boardGame);
+  createComputerBoard(Game.player2.board, playerTwoBoard);
+
+  score1.innerHTML = 'P1: 0';
+  score2.innerHTML = 'CP: 0';
 });
 
 startGameModal.appendChild(onePlayerBtn);
@@ -53,14 +58,16 @@ startGameModal.appendChild(onePlayerBtn);
 const twoPlayersBtn = document.createElement('button');
 twoPlayersBtn.innerText = 'Two Players';
 twoPlayersBtn.addEventListener('click', () => {
+  
   dismissScreen();
-  alert('Two players');
-  debugger
+  
   Game = gameStart(true);
-  createPlayerBoard(Game.player1.board, boardGame);
-  createPlayerBoard(Game.player2.board, playerTwoBoard);
 
-  return Game;
+  createBoardForPlayer(Game.player1.board, boardGame);
+  createBoardForPlayer(Game.player2.board, playerTwoBoard);
+
+  score1.innerHTML = 'P1: 0';
+  score2.innerHTML = 'P2: 0';
 });
 startGameModal.appendChild(twoPlayersBtn);
 
@@ -81,9 +88,15 @@ function messageVisibility(msg){
 }
 
 function updateScore(){
+  debugger
+  computerPlayer?
   Game.turnPlayer == 'player1'?
-  document.querySelector('.score1').innerHTML = Game.identifyPlayer().score:
-  document.querySelector('.score2').innerHTML = Game.identifyPlayer().score
+  score1.innerText = `P1: ${Game.identifyPlayer().score}`:
+  score2.innerText = `CP: ${Game.identifyPlayer().score}`
+  :
+  Game.turnPlayer == 'player1'?
+  score1.innerText = `P1: ${Game.identifyPlayer().score}`:
+  score2.innerText = `P2: ${Game.identifyPlayer().score}`
 }
 
 function removeListener(elm){
@@ -130,13 +143,13 @@ function changeBoardVisibility(){
 }
 
 function getCoordinates(elm){
-  if(diasblePlay) return;
+  if(disablePlay) return;
 
   let coord = elm.target.dataset.coord.split('-');
 
   if(coord == '') return;
 
-  diasblePlay = !diasblePlay;
+  disablePlay = !disablePlay;
   let result = Game.reaceiveAttack(coord);
   attackResults(result, elm);
   if(result) gameOver()
@@ -157,7 +170,7 @@ function gameOver() {
   }
 }
 
-function createPlayerBoard(array, board){
+function createBoardForPlayer(array, board){
   for(let i = 0; i < array.length ; i++){
     for(let k = 0; k <= array[i].length ; k++){
       let square = document.createElement('div');
