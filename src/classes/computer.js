@@ -9,7 +9,7 @@ class Computer extends Player {
     let coord = [[Math.floor(Math.random() * 9)],[Math.floor(Math.random() * 9)]];
 
     if(this.board[coord[0]][coord[1]] === null) this.generateCoordinates();
-
+    console.log('i made an attack')
     return coord;
   };
 

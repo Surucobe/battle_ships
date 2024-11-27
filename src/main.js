@@ -7,7 +7,11 @@ let disablePlay = false;
 let computerPlayer = false;
 let computerAttackMiss = true;
 
-window.addEventListener('animationend', (e) => disablePlay = !disablePlay);
+window.addEventListener('animationend', (e) => {
+  if(Game.identifyPlayer().name !== 'computer'){
+    disablePlay = !disablePlay
+  }
+});
 
 const app = document.getElementById('app');
 
@@ -24,10 +28,12 @@ score2.classList.add('score-two');
 
 const boardGame = document.createElement('div');
 boardGame.classList.add('gameboard');
+boardGame.dataset.player = 'one';
 
 const playerTwoBoard = document.createElement('div');
 playerTwoBoard.classList.add('gameboard');
 playerTwoBoard.classList.add('hidden');
+playerTwoBoard.dataset.player = 'two';
 
 // Modal to start the game with either one or two players
 const startGame = document.createElement('div');
@@ -132,7 +138,7 @@ function attackResults(result, elm) {
     removeListener(elm);
     updateScore();
     messageVisibility('Hit!');
-    if(computerPlayer & !computerAttackMiss){
+    if(computerPlayer){
       setTimeout(getElmFromComputer(), 2000);
     }
   }else{
@@ -140,22 +146,22 @@ function attackResults(result, elm) {
     removeListener(elm);
     setTimeout(changeBoardVisibility, 1500);
     messageVisibility('Miss!');
-    //will need to keep an eye on this
-    if(computerPlayer){
-      computerAttackMiss = !computerAttackMiss;
-      debugger
-      getElmFromComputer();
-    }
   }
 };
 
 function changeBoardVisibility(){
+  if(computerPlayer){
+    computerAttackMiss = !computerAttackMiss;
+    if(!computerAttackMiss){
+      getElmFromComputer();
+    }
+  }
+
   document.querySelectorAll('.gameboard').forEach(board => board.classList.toggle('hidden'));
 }
 
 function getCoordinates(elm){
   if(disablePlay) return;
-  debugger
 
   let coord = elm.target.dataset.coord.split('-');
 
@@ -168,8 +174,9 @@ function getCoordinates(elm){
 };
 
 function getElmFromComputer(){
- let result = Game.player2.makeAttack();
- let elm = document.querySelector(`[data-coord='${result.coordinates.join('-')}']`);
+ let result = Game.computerMakeAttack();
+ const board = document.querySelector('[data-player="two"]');
+ let elm = board.querySelector(`[data-coord='${result.coordinates.join('-')}']`);
  attackResults(result.status, elm);
 }
 

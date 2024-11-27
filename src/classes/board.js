@@ -84,6 +84,19 @@ class Gameboard{
     }
   }
 
+  computerMakeAttack(){
+    let coordinates = this.player2.generateCoordinates();
+
+    let result = this.getOppositeBoard().receiveAttack(coordinates);
+    if(result){
+      this.identifyPlayer().increasecore();
+    }else{
+      this.changeTurnPlayer();
+    }
+
+    return { status: result, coordinates: coordinates }
+  }
+
   getGameBoard(){
     return this.board;
   }
