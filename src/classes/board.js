@@ -72,8 +72,7 @@ class Gameboard{
     this.player2 : this.player1
   }
 
-  reaceiveAttack(coordinates){
-    debugger
+  receiveAttack(coordinates){
     let result = this.getOppositeBoard().receiveAttack(coordinates);
 
     if(result){

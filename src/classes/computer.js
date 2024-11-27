@@ -13,7 +13,27 @@ class Computer extends Player {
     return coord;
   };
 
-  receiveAttack(){
+  receiveAttack(coord){
+    if(this.board[coord[0]][coord[1]] == null) return false;
+
+    if(this.board[coord[0]][coord[1]] !== 0){
+      this.board[coord[0]][coord[1]].hit();
+      
+      if(this.board[coord[0]][coord[1]].isSunk()){
+        console.log(`The ${this.board[coord[0]][coord[1]].name} has been sunked!`);
+        this.removeSunkenShip(coord);
+      }
+
+      this.board[coord[0]][coord[1]] = null;
+      return true
+    };
+
+    this.board[coord[0]][coord[1]] = null;
+
+    return false
+  };
+
+  makeAttack(){
     let coord = this.generateCoordinates();
     if(this.board[coord[0]][coord[1]] == null) return false;
 
@@ -27,12 +47,12 @@ class Computer extends Player {
       }
 
       this.board[coord[0]][coord[1]] = null;
-      return true;
+      return {status: true, coordinates: coord};
     };
 
     this.board[coord[0]][coord[1]] = null;
 
-    return false;
+    return {status: false, coordinates: coord};
   };
 }
 

@@ -107,15 +107,15 @@ function removeListener(elm){
 }
 
 function succesAtkStyle(elm){
-  elm.target.style.backgroundColor = 'lightgreen';
-  elm.target.style.cursor = 'initial';
-  elm.target.classList.remove('hover');
+  elm.style.backgroundColor = 'lightgreen';
+  elm.style.cursor = 'initial';
+  elm.classList.remove('hover');
 }
 
 function failedAtkStyle(elm){
-  elm.target.style.backgroundColor = 'lightcoral';
-  elm.target.style.cursor = 'initial';
-  elm.target.classList.remove('hover');
+  elm.style.backgroundColor = 'lightcoral';
+  elm.style.cursor = 'initial';
+  elm.classList.remove('hover');
 }
 
 function endGameStyles(elm){
@@ -129,16 +129,23 @@ function endGameStyles(elm){
 function attackResults(result, elm) {
   if(result){
     succesAtkStyle(elm);
-    removeListener(elm.target);
+    removeListener(elm);
     updateScore();
     messageVisibility('Hit!');
-    if(computerPlayer & !computerAttackMiss) setTimeout(Game.player2.reaceiveAttack());
+    if(computerPlayer & !computerAttackMiss){
+      setTimeout(getElmFromComputer(), 2000);
+    }
   }else{
     failedAtkStyle(elm);
-    removeListener(elm.target);
+    removeListener(elm);
     setTimeout(changeBoardVisibility, 1500);
     messageVisibility('Miss!');
-    if(computerPlayer) setTimeout(Game.player2.reaceiveAttack(), 2000);
+    //will need to keep an eye on this
+    if(computerPlayer){
+      computerAttackMiss = !computerAttackMiss;
+      debugger
+      getElmFromComputer();
+    }
   }
 };
 
@@ -148,16 +155,23 @@ function changeBoardVisibility(){
 
 function getCoordinates(elm){
   if(disablePlay) return;
+  debugger
 
   let coord = elm.target.dataset.coord.split('-');
 
   if(coord == '') return;
 
   disablePlay = !disablePlay;
-  let result = Game.reaceiveAttack(coord);
-  attackResults(result, elm);
+  let result = Game.receiveAttack(coord);
+  attackResults(result, elm.target);
   if(result) gameOver()
 };
+
+function getElmFromComputer(){
+ let result = Game.player2.makeAttack();
+ let elm = document.querySelector(`[data-coord='${result.coordinates.join('-')}']`);
+ attackResults(result.status, elm);
+}
 
 function gameOver() {
   let gameState = Game.checkGameState();
