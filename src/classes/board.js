@@ -7,10 +7,26 @@ class Gameboard{
     this.board = [];
     this.turnPlayer = 'player1';
 
+    this.createBoard();
+
+    this.player1
+    this.player2
+  }
+
+  restartGame(){
+    this.createBoard();
+
+    this.player1 = new Player()
+    this.player2 = new Player()
+  }
+
+  createBoard(){
     for(let i = 0; i < 10 ;i++){
       this.board[i] = new Array(9).fill(0);
     }
+  }
 
+  createPlayers(players = false) {
     this.player1 = new Player(
       'player 1',
       [
@@ -22,7 +38,7 @@ class Gameboard{
       ]
     );
 
-    if(playerTwo){
+    if(players){
       this.player2 = new Player(
         'player 2',
         [

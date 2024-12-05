@@ -135,3 +135,24 @@
   border-right: 0;
   border-top: 0;
 }
+
+.side-bar {
+  height: 60%;
+  width: 15%;
+  border-radius: 8px;
+  border: 1px solid #000;
+  position: absolute;
+  /* display: none; */
+}
+.right {
+  left: 0;
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.left {
+  right: 0;
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}

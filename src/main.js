@@ -43,12 +43,31 @@ const startGameModal = document.createElement('div');
 startGameModal.classList.add('game-modal');
 startGame.appendChild(startGameModal);
 
-const dismissScreen = () => startGame.style.display = 'none';
+const dismissScreen = () => {
+  debugger
+  startGame.style.display = 'none';
+}
 
+const playerOneSideBar = document.createElement('div');
+playerOneSideBar.classList.add('side-bar');
+playerOneSideBar.classList.add('right');
+const playerOneSideBarButton = document.createElement('button');
+playerOneSideBarButton.innerText = 'Ready!'
+playerOneSideBar.appendChild(playerOneSideBarButton);
+
+const playerTwoSideBar = document.createElement('div');
+playerTwoSideBar.classList.add('side-bar');
+playerTwoSideBar.classList.add('left');
+const playerTwoSideBarButton = document.createElement('button');
+playerTwoSideBarButton.innerText = 'Ready!'
+playerTwoSideBar.appendChild(playerTwoSideBarButton);
+
+//start the game with a single player
 const onePlayerBtn = document.createElement('button');
 onePlayerBtn.innerText = 'One Player'
-onePlayerBtn.addEventListener('click', () => {
+onePlayerBtn.addEventListener('click', startPVCGame);
 
+function startPVCGame(){
   dismissScreen();
 
   Game = gameStart();
@@ -60,14 +79,16 @@ onePlayerBtn.addEventListener('click', () => {
 
   score1.innerHTML = 'P1: 0';
   score2.innerHTML = 'CP: 0';
-});
+}
 
 startGameModal.appendChild(onePlayerBtn);
 
+//start the game with two players
 const twoPlayersBtn = document.createElement('button');
 twoPlayersBtn.innerText = 'Two Players';
-twoPlayersBtn.addEventListener('click', () => {
-  
+twoPlayersBtn.addEventListener('click', startPVPGame);
+
+function startPVPGame(){
   dismissScreen();
   
   Game = gameStart(true);
@@ -77,7 +98,8 @@ twoPlayersBtn.addEventListener('click', () => {
 
   score1.innerHTML = 'P1: 0';
   score2.innerHTML = 'P2: 0';
-});
+}
+
 startGameModal.appendChild(twoPlayersBtn);
 
 
@@ -235,3 +257,5 @@ app.appendChild(score2);
 app.appendChild(boardGame);
 app.appendChild(playerTwoBoard);
 app.appendChild(startGame);
+app.appendChild(playerOneSideBar);
+app.appendChild(playerTwoSideBar);
