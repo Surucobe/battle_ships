@@ -7,13 +7,13 @@ let disablePlay = false;
 let computerPlayer = false;
 let computerAttackMiss = true;
 
+const app = document.getElementById('app');
+
 window.addEventListener('animationend', (e) => {
   if(Game.identifyPlayer().name !== 'computer'){
     disablePlay = !disablePlay
   }
 });
-
-const app = document.getElementById('app');
 
 const message = document.createElement('div');
 message.classList.add('message');
@@ -43,17 +43,43 @@ const startGameModal = document.createElement('div');
 startGameModal.classList.add('game-modal');
 startGame.appendChild(startGameModal);
 
-const dismissScreen = () => {
-  debugger
-  startGame.style.display = 'none';
-}
+const dismissScreen = () => startGame.style.display = 'none';
 
-const playerOneSideBar = document.createElement('div');
-playerOneSideBar.classList.add('side-bar');
-playerOneSideBar.classList.add('right');
-const playerOneSideBarButton = document.createElement('button');
-playerOneSideBarButton.innerText = 'Ready!'
-playerOneSideBar.appendChild(playerOneSideBarButton);
+//SIDEBARS
+function createSideBar(side){
+  const playerSideBar = document.createElement('div');
+  playerSideBar.classList.add('side-bar');
+  playerSideBar.classList.add(side);
+  
+  const shipList = document.createElement('ul');
+  
+  for(let i = 0; i < 5; i++){
+    const elm = document.createElement('div');
+    elm.classList.add('coord-container');
+    const name = document.createElement('h3');
+    
+    elm.appendChild(name);
+    name.innerText = 'Ship';
+    const shipCoordContainer = document.createElement('div');
+    elm.appendChild(shipCoordContainer);
+
+    for(let k = 0; k < (5-i); k++){
+      const coord = document.createElement('input');
+      shipCoordContainer.appendChild(coord);
+    }
+
+    shipList.appendChild(elm);
+  }
+
+  playerSideBar.appendChild(shipList);
+
+  const playerSideBarButton = document.createElement('button');
+  playerSideBarButton.innerText = 'Ready!';
+  playerSideBar.appendChild(playerSideBarButton);
+  // playerSI
+
+  app.appendChild(playerSideBar);
+}
 
 const playerTwoSideBar = document.createElement('div');
 playerTwoSideBar.classList.add('side-bar');
@@ -72,8 +98,12 @@ function startPVCGame(){
 
   Game = gameStart();
 
-  createBoardForPlayer(Game.player1.board, boardGame);
-  createComputerBoard(Game.player2.board, playerTwoBoard);
+  createTemplateBoard(Game.board, boardGame);
+
+  // createBoardForPlayer(Game.player1.board, boardGame);
+  // createComputerBoard(Game.player2.board, playerTwoBoard);
+
+  createSideBar('left');
 
   computerPlayer = !computerPlayer;
 
@@ -93,8 +123,14 @@ function startPVPGame(){
   
   Game = gameStart(true);
 
-  createBoardForPlayer(Game.player1.board, boardGame);
-  createBoardForPlayer(Game.player2.board, playerTwoBoard);
+  createTemplateBoard(Game.board, boardGame);
+
+  // createBoardForPlayer(Game.player1.board, boardGame);
+  // createBoardForPlayer(Game.player2.board, playerTwoBoard);
+
+
+  createSideBar('right');
+  createSideBar('left');
 
   score1.innerHTML = 'P1: 0';
   score2.innerHTML = 'P2: 0';
@@ -235,6 +271,24 @@ function createBoardForPlayer(array, board){
   }
 };
 
+function createTemplateBoard(array, board){
+  for(let i = 0; i < array.length ; i++){
+    for(let k = 0; k <= array[i].length ; k++){
+      let square = document.createElement('div');
+  
+      square.classList.add('gameboard-square');
+      square.classList.add('hover');
+  
+      square.dataset.coord = `${i}-${k}`;
+      square.innerText = `${i}-${k}`;
+  
+      square.addEventListener('click', (e) => getCoordinates(e))
+  
+      board.appendChild(square);
+    }
+  }
+};
+
 function createComputerBoard(array, board){
   for(let i = 0; i < array.length ; i++){
     for(let k = 0; k <= array[i].length ; k++){
@@ -257,5 +311,3 @@ app.appendChild(score2);
 app.appendChild(boardGame);
 app.appendChild(playerTwoBoard);
 app.appendChild(startGame);
-app.appendChild(playerOneSideBar);
-app.appendChild(playerTwoSideBar);

@@ -15,11 +15,17 @@ class Computer extends Player {
     return coord;
   };
 
+  testValideSpace(space, direction){
+    
+  }
+
   generateShipPosition(number){
     let arr = [];
     let startingPosition = this.generateCoordinates();
     const direction = Math.floor(Math.random());
     
+    this.testValideSpace(startingPosition, direction);
+
     //TODO: make sure there is enough space for placing the ships
     //TODO: handle how will the position of the ships work
     for(let i = 0; i < number; i++){
@@ -31,13 +37,9 @@ class Computer extends Player {
   generateShips(){
     const ships = []
 
-    [
-      new Ship(5, 'Titan', [[6,1], [6,2], [6,3], [6,4], [6,5]]),
-      new Ship(4, 'Colosse', [[7,1], [7,2], [7,3], [7,4]]),
-      new Ship(3, 'Espoir', [[3,1], [3,2], [3,3]]),
-      new Ship(2, 'Ardent', [[2,1], [2,2]]),
-      new Ship(2, 'Superbe', [[1,1], [1,2]])
-    ]
+    for(let i = 2; i < 6; i++){
+      ships.push(this.generateShipPosition(i));
+    }
 
     return ships;
   }
