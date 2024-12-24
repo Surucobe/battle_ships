@@ -65,6 +65,7 @@ function createSideBar(side){
 
     for(let k = 0; k < (5-i); k++){
       const coord = document.createElement('input');
+      coord.setAttribute('maxlength', 3);
       shipCoordContainer.appendChild(coord);
     }
 
@@ -76,9 +77,72 @@ function createSideBar(side){
   const playerSideBarButton = document.createElement('button');
   playerSideBarButton.innerText = 'Ready!';
   playerSideBar.appendChild(playerSideBarButton);
-  // playerSI
+  playerSideBarButton.addEventListener('click', () => checkValidCoordinate(side));
 
   app.appendChild(playerSideBar);
+}
+
+function checkValidCoordinate(classname){
+  debugger
+  const inputs = Array.from(document.querySelector(`.${classname}`).querySelectorAll('input'));
+  //check for empty spaces
+  if(inputs.some(input => input.value == '')){
+     alert('no field must be left empty')
+     inputs.forEach(input => {
+       if(input.value == ''){
+         input.style.border = '2px solid red';
+       }
+     })
+     return;
+   }
+
+   //check for valid format in coordinates
+   if(!inputs.some(input => input.value.match(/^\d-\d$/))){
+    inputs.forEach(input => {
+      if(!input.value.match(/^\d-\d$/)){
+        input.style.border = '2px solid red';
+      }
+    })
+    return alert('Coordinates must be in the format of "number-number"');
+   }
+
+   //add coordinates into a dataset in order to make them easier to pick up
+   inputs.forEach(elm => elm.dataset.coord = elm.value);
+
+   // check is there are any dupes
+  const values = inputs.map(input => input.value);
+  if(hasDuplicates(values)) {
+    const dupes = returnDupes(values)
+
+    dupes.forEach(dupe => {
+      let elms = document.querySelectorAll(`input[data-coord="${dupe}"]`);
+
+      for(let i = 0; i < elms.length ;i++){
+        elms[i].style.backgroundColor = 'salmon';
+      }
+
+    })
+
+    return alert("Can't place two boats on a same place");
+  }
+
+  console.log(sortedArr)
+}
+
+function returnDupes(array){
+  const seen = new Set();
+  const duplicates = new Set();
+
+  array.forEach(item => {
+    seen.has(item)? duplicates.add(item):
+    seen.add(item)
+  })
+
+  return Array.from(duplicates);
+}
+
+function hasDuplicates(array){
+  return new Set(array.map(input => input.value)).size !== array.length
 }
 
 const playerTwoSideBar = document.createElement('div');
