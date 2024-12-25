@@ -61,6 +61,7 @@ function createSideBar(side){
     elm.appendChild(name);
     name.innerText = 'Ship';
     const shipCoordContainer = document.createElement('div');
+    shipCoordContainer.dataset.length = 5 - i;
     elm.appendChild(shipCoordContainer);
 
     for(let k = 0; k < (5-i); k++){
@@ -106,6 +107,16 @@ function checkValidCoordinate(classname){
     return alert('Coordinates must be in the format of "number-number"');
    }
 
+   // makes sure the coordinates for the boats work according to the rules
+   debugger
+     const list = document.querySelectorAll('.coord-container');
+     list.forEach(elm => {
+       const elmChecked = coherentCoordinates(elm);
+       if(!elmChecked){
+         return alert('Coordinates must be coherent');
+        }
+     })
+
    //add coordinates into a dataset in order to make them easier to pick up
    inputs.forEach(elm => elm.dataset.coord = elm.value);
 
@@ -143,6 +154,48 @@ function returnDupes(array){
 
 function hasDuplicates(array){
   return new Set(array.map(input => input.value)).size !== array.length
+}
+
+function coherentCoordinates(list){
+  const firstSet = new Set(list.map(elm => elm.querySelector('input').value.split('-')[0]));
+  const secondSet = new Set(list.map(elm => elm.querySelector('input').value.split('-')[1]));
+
+  for(const value of firstSet){
+    if(value < 0 || value > 9){
+      return false;
+    }
+  }
+  for(const value of secondSet){
+    if(value < 0 || value > 9){
+      return false;
+    }
+  }
+
+  if(firstSet.size == list.length){
+    const array = Array.from(firstSet);
+
+    for(let i = 0; i < array.length; i++){
+      if(array.indexOf(array[0]) != 0) continue;
+      if(Math.abs(array[i] - array[i-1]) != 1) return false;
+    }
+
+    if(secondSet.size == 1){
+      return true;
+    }
+  }else{
+    const array = Array.from(secondSet);
+
+    for(let i = 0; i < array.length; i++){
+      if(array.indexOf(array[0]) != 0) continue;
+      if(Math.abs(array[i] - array[i-1]) != 1) return false;
+    }
+
+    if(firstSet.size == 1){
+      return true;
+    }
+  }
+
+  return false;
 }
 
 const playerTwoSideBar = document.createElement('div');
