@@ -30,10 +30,10 @@ const boardGame = document.createElement('div');
 boardGame.classList.add('gameboard');
 boardGame.dataset.player = 'one';
 
-const playerTwoBoard = document.createElement('div');
-playerTwoBoard.classList.add('gameboard');
-playerTwoBoard.classList.add('hidden');
-playerTwoBoard.dataset.player = 'two';
+const secondPlayerBoard = document.createElement('div');
+secondPlayerBoard.classList.add('gameboard');
+secondPlayerBoard.classList.add('hidden');
+secondPlayerBoard.dataset.player = 'two';
 
 // Modal to start the game with either one or two players
 const startGame = document.createElement('div');
@@ -44,6 +44,13 @@ startGameModal.classList.add('game-modal');
 startGame.appendChild(startGameModal);
 
 const dismissScreen = () => startGame.style.display = 'none';
+
+function returnToInitialStyle(elm) {
+  elm.addEventListener('change', (event) => {
+    event.target.style.border = '1px solid #000';
+    event.target.style.backgroundColor = '#fff';
+})
+}
 
 //SIDEBARS
 function createSideBar(side){
@@ -67,6 +74,7 @@ function createSideBar(side){
     for(let k = 0; k < (5-i); k++){
       const coord = document.createElement('input');
       coord.setAttribute('maxlength', 3);
+      returnToInitialStyle(coord);
       shipCoordContainer.appendChild(coord);
     }
 
@@ -84,9 +92,8 @@ function createSideBar(side){
 }
 
 function checkValidCoordinate(classname){
-  debugger
   const inputs = Array.from(document.querySelector(`.${classname}`).querySelectorAll('input'));
-  //check for empty spaces
+
   if(inputs.some(input => input.value == '')){
      alert('no field must be left empty')
      inputs.forEach(input => {
@@ -97,7 +104,6 @@ function checkValidCoordinate(classname){
      return;
    }
 
-   //check for valid format in coordinates
    if(!inputs.some(input => input.value.match(/^\d-\d$/))){
     inputs.forEach(input => {
       if(!input.value.match(/^\d-\d$/)){
@@ -107,20 +113,18 @@ function checkValidCoordinate(classname){
     return alert('Coordinates must be in the format of "number-number"');
    }
 
-   // makes sure the coordinates for the boats work according to the rules
-   debugger
-     const list = document.querySelectorAll('.coord-container');
-     list.forEach(elm => {
-       const elmChecked = coherentCoordinates(elm);
-       if(!elmChecked){
-         return alert('Coordinates must be coherent');
-        }
-     })
+     const list = document.querySelector(`.${classname}`).querySelectorAll('.coord-container');
+     
+     for(let i = 0; i < list.length; i++){
+      const elmChecked = coherentCoordinates(list[i]);
+      if(!elmChecked){
+        list[i].querySelectorAll('input').forEach(input => input.style.border = '1px solid red');
+        return alert(`Coordinates must be coherent`);
+       }
+     }
 
-   //add coordinates into a dataset in order to make them easier to pick up
    inputs.forEach(elm => elm.dataset.coord = elm.value);
 
-   // check is there are any dupes
   const values = inputs.map(input => input.value);
   if(hasDuplicates(values)) {
     const dupes = returnDupes(values)
@@ -134,10 +138,14 @@ function checkValidCoordinate(classname){
 
     })
 
-    return alert("Can't place two boats on a same place");
-  }
+    if(dupes.length > 1){
+      return alert("Can't place two boats on a same place");
+    }
 
-  console.log(sortedArr)
+    Game.changeStatus(classname);
+    document.querySelector(`.${classname}`).querySelectorAll('input').forEach(input => input.style.backgroundColor = 'lightgreen')
+    createBoardsToStartGame();
+  }
 }
 
 function returnDupes(array){
@@ -157,8 +165,8 @@ function hasDuplicates(array){
 }
 
 function coherentCoordinates(list){
-  const firstSet = new Set(list.map(elm => elm.querySelector('input').value.split('-')[0]));
-  const secondSet = new Set(list.map(elm => elm.querySelector('input').value.split('-')[1]));
+  const firstSet = new Set(Array.from(list.querySelectorAll('input')).map(item => item.value.split('-')[0]));
+  const secondSet = new Set(Array.from(list.querySelectorAll('input')).map(item => item.value.split('-')[1]));
 
   for(const value of firstSet){
     if(value < 0 || value > 9){
@@ -171,23 +179,28 @@ function coherentCoordinates(list){
     }
   }
 
-  if(firstSet.size == list.length){
+  if(firstSet.size === list.querySelectorAll('input').length){
     const array = Array.from(firstSet);
 
     for(let i = 0; i < array.length; i++){
-      if(array.indexOf(array[0]) != 0) continue;
-      if(Math.abs(array[i] - array[i-1]) != 1) return false;
+      if(array.indexOf(array[0]) === 0) continue;
+      if(Math.abs(array[i] - array[i-1]) != 1){
+        return false;
+      }
     }
 
     if(secondSet.size == 1){
       return true;
     }
-  }else{
+  }else if(secondSet.size === list.querySelectorAll('input').length){
     const array = Array.from(secondSet);
 
     for(let i = 0; i < array.length; i++){
-      if(array.indexOf(array[0]) != 0) continue;
-      if(Math.abs(array[i] - array[i-1]) != 1) return false;
+      if(array.indexOf(array[i]) != 0){
+        if(Math.abs(array[i] - array[i-1]) != 1){
+          return false;
+        }
+      }
     }
 
     if(firstSet.size == 1){
@@ -217,9 +230,6 @@ function startPVCGame(){
 
   createTemplateBoard(Game.board, boardGame);
 
-  // createBoardForPlayer(Game.player1.board, boardGame);
-  // createComputerBoard(Game.player2.board, playerTwoBoard);
-
   createSideBar('left');
 
   computerPlayer = !computerPlayer;
@@ -241,10 +251,6 @@ function startPVPGame(){
   Game = gameStart(true);
 
   createTemplateBoard(Game.board, boardGame);
-
-  // createBoardForPlayer(Game.player1.board, boardGame);
-  // createBoardForPlayer(Game.player2.board, playerTwoBoard);
-
 
   createSideBar('right');
   createSideBar('left');
@@ -422,9 +428,41 @@ function createComputerBoard(array, board){
   }
 }
 
+function getShipInsideArray(side){
+  return Array.from(document.querySelector(`.${side}`).querySelectorAll('.coord-container')).map(elm => Array.from(elm.querySelectorAll('input'))).map(arr => arr.map(input => input.value));
+}
+
+function createBoardsToStartGame() {
+
+  if(Game.player1Ready && Game.player2Ready){
+    if(!computerPlayer){
+      debugger
+      document.querySelector('.gameboard').remove();
+
+      const playerOneBoard = getShipInsideArray('left');
+      const playerTwoBoard = getShipInsideArray('right');
+
+      Game.createPlayer('player 1', playerOneBoard);
+      Game.createPlayer('player 2', playerTwoBoard);
+
+      createBoardForPlayer(Game.player1.board, boardGame);
+      createBoardForPlayer(Game.player2.board, secondPlayerBoard);
+    }else{
+      const playerOneBoard = getShipInsideArray('left');
+
+      Game.createPlayer('player 1', playerOneBoard);
+
+      createBoardForPlayer(Game.player1.board, boardGame);
+      createComputerBoard(secondPlayerBoard);
+    }
+  }else{
+    return alert('Both players must be ready');
+  }
+};
+
 app.appendChild(message);
 app.appendChild(score1);
 app.appendChild(score2);
 app.appendChild(boardGame);
-app.appendChild(playerTwoBoard);
+app.appendChild(secondPlayerBoard);
 app.appendChild(startGame);

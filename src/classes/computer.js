@@ -6,6 +6,7 @@ class Computer extends Player {
     super(props);
 
     this.ships = this.generateShips();
+    this.status = false;
   }
 
   generateCoordinates() {

@@ -1,3 +1,5 @@
+import Ship from "./ship";
+
 class Player{
   constructor(playerName, ships){
     this.board = [];
@@ -8,7 +10,10 @@ class Player{
       this.board[i] = new Array(9).fill(0);
     }
     // implementation of this using the DOM will be done in the future
-    this.ships = ships;
+    this.ships = 
+    ships.map(arr => arr.map(coord => coord.split('-')))
+    .map(ship => new Ship(ship.length, ship));
+
     this.placeShips();
   };
 
@@ -20,7 +25,7 @@ class Player{
    this.ships.forEach(ship => {
      let position = ship.position;
      
-    for(let i = 0; i < position.length ; i++){
+    for(let i = 0; i < ship.length; i++){
       this.board[position[i][0]][position[i][1]] = ship;
     };
    });
