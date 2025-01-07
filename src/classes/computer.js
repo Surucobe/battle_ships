@@ -1,48 +1,94 @@
-import Player from "./player";
 import Ship from "./ship";
 
-class Computer extends Player {
-  constructor(props) {
-    super(props);
+class Computer {
+  constructor() {
+    this.name = 'Computer';
+    this.board = [];
+    this.score = 0;
 
-    this.ships = this.generateShips();
+    for(let i = 0; i < 10 ;i++){
+      this.board[i] = new Array(9).fill(0);
+    }
+    
+    this.ships = [];
     this.status = false;
+    this.generateShips();
   }
 
-  generateCoordinates() {
-    let coord = [[Math.floor(Math.random() * 9)],[Math.floor(Math.random() * 9)]];
+  generateStartingCoordinate() {
+    let coord = [Math.floor(Math.random() * 9),Math.floor(Math.random() * 9)];
 
-    if(this.board[coord[0]][coord[1]] === null) this.generateCoordinates();
+    if(this.board[coord[0]][coord[1]] !== 0) this.generateStartingCoordinate();
     return coord;
   };
 
-  testValideSpace(space, direction){
-    
+  generateArrayWithShips(startPosition, direction, length){
+    const returnThisArray = [];
+
+    return returnThisArray;
   }
 
-  generateShipPosition(number){
+  generateShipPosition(num){
     let arr = [];
-    let startingPosition = this.generateCoordinates();
-    const direction = Math.floor(Math.random());
     
-    this.testValideSpace(startingPosition, direction);
+    let startingPosition = this.generateStartingCoordinate();
+    const direction = Math.floor(Math.random());
 
-    //TODO: make sure there is enough space for placing the ships
-    //TODO: handle how will the position of the ships work
-    for(let i = 0; i < number; i++){
-      arr.push([startingPosition[0], startingPosition[1]]);
-      startingPosition[direction]+1;
+    if(startingPosition[direction] + num >= 9){
+      for(let i = 0; i < num; i++){
+        if(arr.num === 0){
+          arr.push(startingPosition);
+        }else{
+          arr.push(startingPosition.map((value, index) => {
+            return index === direction? value-i
+            :value
+          }))
+        }
+      }
+    }else{
+      for(let i = 0; i < num; i++){
+        if(arr.num === 0){
+          arr.push(startingPosition);
+        }else{
+          arr.push(startingPosition.map((value, index) => {
+            return index === direction? value+i
+            :value
+          }))
+        }
+      }
     }
+
+    return arr;
   }
 
   generateShips(){
-    const ships = []
+    const ships = [];
+    let missingShips = 5;
+    
+    while(missingShips > 0){
+      let newShipPosition = this.generateShipPosition(missingShips);
 
-    for(let i = 2; i < 6; i++){
-      ships.push(this.generateShipPosition(i));
+      if(ships.length === 0){
+        ships.push(newShipPosition);
+        missingShips--;
+      }else{
+        let overlap = newShipPosition.forEach(elm => ships.some(shipElm => shipElm === elm));
+        if(!overlap){
+          ships.push(newShipPosition);
+          missingShips--;
+        }
+      }
     }
-
-    return ships;
+    
+    ships.forEach(ship => {
+      const newShip = new Ship(ship.length, ship);
+      this.ships.push(newShip);
+      
+      newShip.position.forEach(coord => {
+        this.board[coord[0]][coord[1]] = newShip;
+      })
+      debugger
+    });
   }
 
   receiveAttack(coord){

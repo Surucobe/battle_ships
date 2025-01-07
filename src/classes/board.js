@@ -42,7 +42,10 @@ class Gameboard{
     }
   }
 
-  createComputerPlayer(){}
+  createComputerPlayer(){
+    this.player2Ready = true;
+    this.player2 = new Computer();
+  }
 
   checkGameState(){
     return {

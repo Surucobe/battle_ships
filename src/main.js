@@ -142,8 +142,10 @@ function checkValidCoordinate(classname){
       return alert("Can't place two boats on a same place");
     }
 
-    Game.changeStatus(classname);
     document.querySelector(`.${classname}`).querySelectorAll('input').forEach(input => input.style.backgroundColor = 'lightgreen')
+    if(Array.from(document.querySelector(`.${classname}`).querySelectorAll('input')).every(input => input.style.backgroundColor == 'lightgreen')){
+      Game.changeStatus(classname);
+    }
     createBoardsToStartGame();
   }
 }
@@ -233,6 +235,7 @@ function startPVCGame(){
   createSideBar('left');
 
   computerPlayer = !computerPlayer;
+  Game.createComputerPlayer()
 
   score1.innerHTML = 'P1: 0';
   score2.innerHTML = 'CP: 0';
@@ -451,6 +454,7 @@ function createBoardsToStartGame() {
       const playerOneBoard = getShipInsideArray('left');
 
       Game.createPlayer('player 1', playerOneBoard);
+      Game.createComputerPlayer();
 
       createBoardForPlayer(Game.player1.board, boardGame);
       createComputerBoard(secondPlayerBoard);
